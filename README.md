@@ -8,15 +8,15 @@ This template should help get you started developing with Vue 3 in Vite. The tem
 
 ### Quiz App
 
-+This VueJS quiz app is a simple yet engaging way to test your knowledge 
+* This VueJS quiz app is a simple yet engaging way to test your knowledge 
 in various topics. 
 
-+The app is comprised of three different quizzes, each with a unique set 
++ The app is comprised of three different quizzes, each with a unique set 
 of questions to challenge you. Built with VueJS, this app is a great 
 example of how easy it is to create interactive applications with this framework. 
 
-+Created following a tutorial by Tyler Potts titled "Build a Quiz App using Vue JS," this app is perfect for 
++ Created following a tutorial by Tyler Potts titled "Build a Quiz App using Vue JS," this app is perfect for 
 those looking to learn more about VueJS and how to create fun and 
 engaging quizzes. 
 
-+Try it out and see how well you do!
++ Try it out and see how well you do!
