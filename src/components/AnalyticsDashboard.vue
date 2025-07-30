@@ -1,18 +1,21 @@
 <template>
   <div class="analytics-dashboard">
     <h2>📊 Analytics Dashboard</h2>
-    <div v-if="history.results.length === 0" class="empty-msg">
+    <div
+      v-if="history.results.length === 0"
+      class="empty-msg"
+    >
       No quiz history yet. Complete a quiz to see analytics!
     </div>
     <div v-else>
       <div class="chart-section">
-        <canvas ref="scoreChart"></canvas>
+        <canvas ref="scoreChart" />
       </div>
       <div class="chart-section">
-        <canvas ref="categoryChart"></canvas>
+        <canvas ref="categoryChart" />
       </div>
       <div class="chart-section">
-        <canvas ref="timingChart"></canvas>
+        <canvas ref="timingChart" />
       </div>
     </div>
   </div>

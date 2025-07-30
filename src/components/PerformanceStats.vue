@@ -12,24 +12,21 @@
         <span class="stat-value">{{ formatTime(completionTime) }}</span>
       </div>
     </div>
-    
-    <div class="stat-card">
-      <div class="stat-icon">
-        🎯
-      </div>
-      <div class="stat-content">
-        <span class="stat-label">Accuracy</span>
-        <span class="stat-value">{{ accuracy }}%</span>
-      </div>
-    </div>
-    
-    <div class="stat-card">
+    <div
+      class="stat-card"
+      tabindex="0"
+      aria-label="Grade: {{ getGrade(accuracy) }}"
+      aria-live="polite"
+    >
       <div class="stat-icon">
         📊
       </div>
       <div class="stat-content">
         <span class="stat-label">Grade</span>
-        <span class="stat-value">{{ getGrade(accuracy) }}</span>
+        <span
+          class="stat-value grade"
+          :class="getGradeClass(accuracy)"
+        >{{ getGrade(accuracy) }}</span>
       </div>
     </div>
   </div>

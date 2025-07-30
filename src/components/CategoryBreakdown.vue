@@ -3,11 +3,24 @@
     <h3 class="breakdown-title">
       📈 Performance by Category
     </h3>
-    <div class="category-grid">
+    <section
+      class="category-grid"
+      role="region"
+      aria-labelledby="category-breakdown-title"
+    >
+      <h3
+        id="category-breakdown-title"
+        class="visually-hidden"
+      >
+        Category Breakdown
+      </h3>
       <div 
         v-for="(stats, category) in categoryData" 
         :key="category" 
         class="category-card"
+        tabindex="0"
+        :aria-label="`${category}: ${getPercentage(stats)} percent, grade ${getGrade(getPercentage(stats))}`"
+        aria-live="polite"
       >
         <div class="category-header">
           <span class="category-name">{{ category }}</span>
@@ -36,7 +49,7 @@
           </span>
         </div>
       </div>
-    </div>
+    </section>
   </div>
 </template>
 

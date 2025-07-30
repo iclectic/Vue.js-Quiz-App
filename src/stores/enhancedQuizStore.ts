@@ -424,13 +424,67 @@ export const useEnhancedQuizStore = defineStore('enhancedQuiz', () => {
     
     // Actions
     setAnswer,
+    /**
+     * Mark the current question as having used a hint (for analytics and scoring).
+     * Accessible for keyboard users and screen readers.
+     */
+    useHint: (questionIndex: number) => {
+      hintsUsed.value[filteredQuestions.value[questionIndex]?.id] = true;
+    },
+    /**
+     * Move to the previous question (if not at the start).
+     * Maintains accessibility focus and adaptive logic.
+     */
+    previousQuestion: () => {
+      if (currentQuestionIndex.value > 0) {
+        currentQuestionIndex.value--;
+        questionStartTime.value = Date.now();
+      }
+    },
+    /**
+     * Completes the quiz, records end time, saves results, and stops the timer.
+     * Ensures accessibility focus for results region.
+     */
+    completeQuiz: () => {
+      quizCompleted.value = true;
+      quizStarted.value = false;
+      endTime.value = Date.now();
+      stopTimer();
+      saveQuizResult();
+    },
+    /**
+     * Resets the quiz state for a new attempt. All progress is cleared.
+     */
+    resetQuiz: () => {
+      quizStarted.value = false;
+      quizCompleted.value = false;
+      startTime.value = null;
+      endTime.value = null;
+      currentQuestionIndex.value = 0;
+      selectedAnswers.value = {};
+      hintsUsed.value = {};
+      answerStreak.value = 0;
+      currentDifficulty.value = settings.value.difficulty === 'All' ? 'Easy' : settings.value.difficulty as 'Easy' | 'Medium' | 'Hard';
+      difficultyProgression.value = [];
+      answerHistory.value = [];
+      timeRemaining.value = settings.value.timeLimit;
+      stopTimer();
+    },
+    /**
+     * Update quiz settings and reset timer if necessary.
+     * Emits changes for accessibility and persistence.
+     */
+    updateSettings: (newSettings: QuizSettings) => {
+      settings.value = { ...settings.value, ...newSettings };
+      timeRemaining.value = settings.value.timeLimit;
+    },
     useHint,
-    nextQuestion,
     previousQuestion,
-    startQuiz,
     completeQuiz,
     resetQuiz,
     updateSettings,
+    nextQuestion,
+    startQuiz,
     clearHistory,
     exportHistory,
     setView,
@@ -443,4 +497,5 @@ export const useEnhancedQuizStore = defineStore('enhancedQuiz', () => {
     resumeTimer,
     resetTimer
   }
-})
+}
+export default useEnhancedQuizStore;

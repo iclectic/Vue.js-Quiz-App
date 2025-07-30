@@ -18,35 +18,60 @@
             <option :value="600">10 minutes</option>
             <option :value="900">15 minutes</option>
             <option :value="0">No limit</option>
+          </select>
+        </label>
       </div>
 
       <div class="form-group">
         <label for="difficulty">Difficulty</label>
-        <select id="difficulty" v-model="localSettings.difficulty" aria-label="Select quiz difficulty">
-          <option value="All">All Levels</option>
-          <option value="Easy">Easy</option>
-          <option value="Medium">Medium</option>
-          <option value="Hard">Hard</option>
+        <select
+          id="difficulty"
+          v-model="localSettings.difficulty"
+          aria-label="Select quiz difficulty"
+        >
+          <option value="All">
+            All Levels
+          </option>
+          <option value="Easy">
+            Easy
+          </option>
+          <option value="Medium">
+            Medium
+          </option>
+          <option value="Hard">
+            Hard
+          </option>
         </select>
       </div>
 
       <div class="form-group">
         <label for="category">Category</label>
-        <select id="category" v-model="localSettings.category" aria-label="Select quiz category">
-          <option value="All">All Categories</option>
-          <option value="Data Structures">Data Structures</option>
-          <option value="Algorithms">Algorithms</option>
+        <select
+          id="category"
+          v-model="localSettings.category"
+          aria-label="Select quiz category"
+        >
+          <option value="All">
+            All Categories
+          </option>
+          <option value="Data Structures">
+            Data Structures
+          </option>
+          <option value="Algorithms">
+            Algorithms
+          </option>
         </select>
       </div>
 
       <div class="form-group">
-        <label for="shuffle-questions">Shuffle Questions</label>
-        <input 
-          id="shuffle-questions"
-          v-model="localSettings.shuffleQuestions" 
-          type="checkbox"
-          aria-label="Shuffle questions"
-        >
+        <label for="shuffle-questions">Shuffle Questions
+          <input 
+            id="shuffle-questions"
+            v-model="localSettings.shuffleQuestions" 
+            type="checkbox"
+            aria-label="Shuffle questions"
+          >
+        </label>
       </div>
 
       <div class="form-group">
@@ -57,20 +82,6 @@
           type="checkbox"
           aria-label="Enable hints"
         >
-          <span class="label-text">Shuffle Questions</span>
-        </label>
-      </div>
-
-      <div class="setting-group">
-        <label class="setting-toggle">
-          <input 
-            v-model="localSettings.showHints" 
-            type="checkbox"
-            class="toggle-input"
-          >
-          <span class="toggle-slider" />
-          <span class="label-text">Enable Hints</span>
-        </label>
       </div>
     </div>
 

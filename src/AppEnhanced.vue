@@ -1,21 +1,33 @@
 <template>
-  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <a
+    href="#main-content"
+    class="skip-link"
+  >Skip to main content</a>
   <div id="app">
-    <header class="app-header" role="banner">
+    <header
+      class="app-header"
+      role="banner"
+    >
       <div class="header-content">
-        <h1 id="app-title">Vue.js Quiz App</h1>
+        <h1 id="app-title">
+          Vue.js Quiz App
+        </h1>
         <p>Test your knowledge of Data Structures & Algorithms</p>
       </div>
       <button 
         class="theme-toggle" 
         :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
-        @click="toggleTheme"
         tabindex="0"
+        @click="toggleTheme"
       >
         <span v-if="isDark">🌙 Dark</span>
         <span v-else>☀️ Light</span>
       </button>
-      <nav class="app-nav" role="navigation" aria-label="Main navigation">
+      <nav
+        class="app-nav"
+        role="navigation"
+        aria-label="Main navigation"
+      >
         <button 
           :class="{ active: currentView === 'quiz' }" 
           class="nav-btn"
@@ -47,7 +59,12 @@
       </nav>
     </header>
 
-    <main id="main-content" class="app-main" role="main" tabindex="-1">
+    <main
+      id="main-content"
+      class="app-main"
+      role="main"
+      tabindex="-1"
+    >
       <!-- Settings View -->
       <div
         v-if="currentView === 'settings'"

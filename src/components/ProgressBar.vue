@@ -1,13 +1,29 @@
 <template>
   <div class="progress-container">
-    <div class="progress-bar">
-      <div
-        class="progress-fill"
-        :style="{ width: progress + '%' }"
-      />
+    <div
+      class="progress-bar"
+      role="progressbar" 
+      :aria-valuenow="progress" 
+      :aria-valuemin="0" 
+      :aria-valuemax="total" 
+      :aria-label="`Progress: ${current} / ${total}`"
+      tabindex="0"
+    >
+      <div class="progress-bar-bg">
+        <div
+          class="progress-fill"
+          :style="{ width: progress + '%' }"
+        />
+      </div>
     </div>
     <span class="progress-text">{{ current }} / {{ total }}</span>
   </div>
+  <style scoped>
+    .progress-bar:focus {
+    outline: 2px solid var(--focus-colour, #1976d2);
+    outline-offset: 2px;
+    }
+  </style>
 </template>
 
 <script setup lang="ts">

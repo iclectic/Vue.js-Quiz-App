@@ -3,8 +3,17 @@
     class="quiz-timer"
     :class="timerClass"
   >
-    <div class="timer-container" role="region" aria-labelledby="timer-title">
-      <h2 id="timer-title" class="visually-hidden">Quiz Timer</h2>
+    <div
+      class="timer-container"
+      role="region"
+      aria-labelledby="timer-title"
+    >
+      <h2
+        id="timer-title"
+        class="visually-hidden"
+      >
+        Quiz Timer
+      </h2>
       <svg
         class="timer-svg"
         viewBox="0 0 100 100"
@@ -34,9 +43,15 @@
           {{ timeLabel }}
         </div>
       </div>
-      <div class="timer-info" aria-live="polite">
+      <div
+        class="timer-info"
+        aria-live="polite"
+      >
         <span class="time-label">Time Remaining:</span>
-        <span class="time-value" :class="{ warning: isWarning, critical: isCritical }">
+        <span
+          class="time-value"
+          :class="{ warning: isWarning, critical: isCritical }"
+        >
           {{ formattedTime }}
         </span>
       </div>
@@ -47,8 +62,8 @@
         <button 
           class="timer-btn" 
           :class="{ 'paused': !isActive }"
-          @click="toggleTimer"
           :aria-label="!isActive ? 'Resume timer' : 'Pause timer'"
+          @click="toggleTimer"
         >
           {{ !isActive ? 'Resume' : 'Pause' }}
         </button>

@@ -1,5 +1,9 @@
 <template>
-  <div class="question-card" role="group" :aria-labelledby="`question-label-${question.index}`">
+  <div
+    class="question-card"
+    role="group"
+    :aria-labelledby="`question-label-${question.index}`"
+  >
     <!-- Question Meta Information -->
     <div class="question-meta">
       <span class="category">{{ question.category }}</span>
@@ -12,18 +16,29 @@
     </div>
     
     <!-- Question Text -->
-    <h2 class="question-text" :id="`question-label-${question.index}`">
+    <h2
+      :id="`question-label-${question.index}`"
+      class="question-text"
+    >
       {{ question.question }}
     </h2>
     
     <!-- Score Display -->
-    <div class="score-display" aria-live="polite">
+    <div
+      class="score-display"
+      aria-live="polite"
+    >
       Current Score: {{ currentScore }}/{{ totalQuestions }}
     </div>
     
     <!-- Answer Options -->
-    <fieldset class="options" :aria-describedby="`question-label-${question.index}`">
-      <legend class="visually-hidden">Answer options</legend>
+    <fieldset
+      class="options"
+      :aria-describedby="`question-label-${question.index}`"
+    >
+      <legend class="visually-hidden">
+        Answer options
+      </legend>
       <label 
         v-for="(option, index) in question.options"
         :key="index"
@@ -36,9 +51,9 @@
           :value="index"
           :checked="question.selected === index"
           :disabled="question.selected !== null"
-          @change="handleAnswerSelect(index)"
           :aria-checked="question.selected === index ? 'true' : 'false'"
           :aria-label="`Answer option: ${option}`"
+          @change="handleAnswerSelect(index)"
         >
         <span class="option-text">{{ option }}</span>
       </label>
@@ -48,15 +63,15 @@
     <button
       :disabled="question.selected === null"
       class="next-button"
-      @click="handleNext"
       aria-label="Next question or finish quiz"
+      @click="handleNext"
     >
       {{ getButtonText() }}
     </button>
   </div>
 
   <style scoped>
-  .visually-hidden {
+    .visually-hidden {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -65,7 +80,7 @@
     overflow: hidden;
     clip: rect(0 0 0 0);
     border: 0;
-  }
+    }
   </style>
 </template>
 
