@@ -106,6 +106,13 @@ export const useEnhancedQuizStore = defineStore('enhancedQuiz', () => {
   const hintsUsed = ref<{ [key: number]: boolean }>({})
   const currentView = ref<'quiz' | 'settings' | 'history'>('quiz')
 
+  // Adaptive and timing state
+  const answerStreak = ref(0) // + for correct, - for incorrect
+  const currentDifficulty = ref<'Easy' | 'Medium' | 'Hard'>('Easy')
+  const difficultyProgression = ref<string[]>([])
+  const answerHistory = ref<import('../types/quiz').AnswerHistoryItem[]>([])
+  const questionStartTime = ref<number | null>(null)
+
   // Timer state
   const timeRemaining = ref(settings.value.timeLimit)
   const timerActive = ref(false)
@@ -235,34 +242,82 @@ export const useEnhancedQuizStore = defineStore('enhancedQuiz', () => {
   const resetTimer = (): void => {
     stopTimer()
     timeRemaining.value = settings.value.timeLimit
-  }
 
   // Actions
   const setAnswer = (questionIndex: number, answerIndex: number): void => {
     const question = filteredQuestions.value[questionIndex]
-    if (question) {
-      selectedAnswers.value[question.id] = answerIndex.toString()
-    }
-  }
+    if (!question || quizCompleted.value) return
 
-  const useHint = (questionId: number): void => {
-    if (settings.value.showHints) {
-      hintsUsed.value[questionId] = true
+    // Record time spent on this question
+    const now = Date.now()
+    let timeSpent = 0
+    if (questionStartTime.value) {
+      timeSpent = Math.round((now - questionStartTime.value) / 1000)
+      questionStartTime.value = now
     }
-  }
 
-  const nextQuestion = (): void => {
+    selectedAnswers.value[question.id] = answerIndex.toString()
+
+    // Check correctness
+    const isCorrect = answerIndex === question.answer
+    // Update streak
+    if (isCorrect) {
+      answerStreak.value = answerStreak.value >= 0 ? answerStreak.value + 1 : 1
+    } else {
+      answerStreak.value = answerStreak.value <= 0 ? answerStreak.value - 1 : -1
+    }
+
+    // Save to answer history
+    answerHistory.value.push({
+      questionId: question.id,
+      selected: answerIndex,
+      correct: isCorrect,
+      difficulty: question.difficulty,
+      timeSpent
+    })
+    // Save difficulty progression
+    difficultyProgression.value.push(currentDifficulty.value)
+
+    // Move to next question or complete quiz
     if (currentQuestionIndex.value < totalQuestions.value - 1) {
-      currentQuestionIndex.value++
+      nextQuestion()
     } else {
       completeQuiz()
     }
   }
 
-  const previousQuestion = (): void => {
-    if (currentQuestionIndex.value > 0) {
-      currentQuestionIndex.value--
+  const nextQuestion = (): void => {
+    // Adaptive logic: adjust difficulty based on streak
+    let nextDifficulty = currentDifficulty.value
+    if (answerStreak.value >= 2 && currentDifficulty.value !== 'Hard') {
+      nextDifficulty = currentDifficulty.value === 'Easy' ? 'Medium' : 'Hard'
+    } else if (answerStreak.value <= -2 && currentDifficulty.value !== 'Easy') {
+      nextDifficulty = currentDifficulty.value === 'Hard' ? 'Medium' : 'Easy'
     }
+    currentDifficulty.value = nextDifficulty
+
+    // Find next unanswered question of the desired difficulty
+    const unanswered = filteredQuestions.value.filter((q, i) =>
+      !selectedAnswers.value[q.id] && q.difficulty === nextDifficulty
+    )
+    if (unanswered.length > 0) {
+      const nextQ = unanswered[0]
+      const idx = filteredQuestions.value.findIndex(q => q.id === nextQ.id)
+      if (idx !== -1) {
+        currentQuestionIndex.value = idx
+      } else {
+        currentQuestionIndex.value++
+      }
+    } else {
+      // Fallback: next unanswered question of any difficulty
+      const anyUnanswered = filteredQuestions.value.findIndex((q, i) => !selectedAnswers.value[q.id])
+      if (anyUnanswered !== -1) {
+        currentQuestionIndex.value = anyUnanswered
+      } else if (currentQuestionIndex.value < totalQuestions.value - 1) {
+        currentQuestionIndex.value++
+      }
+    }
+    questionStartTime.value = Date.now()
   }
 
   const startQuiz = (): void => {
@@ -272,34 +327,16 @@ export const useEnhancedQuizStore = defineStore('enhancedQuiz', () => {
     currentQuestionIndex.value = 0
     selectedAnswers.value = {}
     hintsUsed.value = {}
-    
+    answerStreak.value = 0
+    currentDifficulty.value = settings.value.difficulty === 'All' ? 'Easy' : settings.value.difficulty as 'Easy' | 'Medium' | 'Hard'
+    difficultyProgression.value = []
+    answerHistory.value = []
+    questionStartTime.value = Date.now()
+
     if (settings.value.showTimer) {
       resetTimer()
       startTimer()
     }
-  }
-
-  const completeQuiz = (): void => {
-    if (quizCompleted.value) return
-    
-    quizCompleted.value = true
-    endTime.value = Date.now()
-    stopTimer()
-    
-    // Save result to history
-    saveQuizResult()
-  }
-
-  const resetQuiz = (): void => {
-    currentQuestionIndex.value = 0
-    selectedAnswers.value = {}
-    hintsUsed.value = {}
-    quizCompleted.value = false
-    quizStarted.value = false
-    startTime.value = null
-    endTime.value = null
-    stopTimer()
-    resetTimer()
   }
 
   const saveQuizResult = (): void => {
@@ -313,22 +350,14 @@ export const useEnhancedQuizStore = defineStore('enhancedQuiz', () => {
       completionTime: completionTime.value,
       scorePercentage: scorePercentage.value,
       categoryBreakdown: categoryBreakdown.value,
-      settings: { ...settings.value }
+      settings: { ...settings.value },
+      answerHistory: [...answerHistory.value],
+      difficultyProgression: [...difficultyProgression.value]
     }
 
-    const newHistory = { ...history.value }
-    newHistory.results.push(result)
-    newHistory.totalQuizzes = newHistory.results.length
-    newHistory.bestScore = Math.max(newHistory.bestScore, scorePercentage.value)
-    newHistory.averageScore = newHistory.results.reduce((sum, r) => sum + r.scorePercentage, 0) / newHistory.results.length
-
-    history.value = newHistory
-  }
-
-  const updateSettings = (newSettings: QuizSettings): void => {
-    settings.value = newSettings
-    resetTimer()
-  }
+    history.value.results.unshift(result)
+    if (history.value.results.length > 50) {
+      history.value.results.pop()
 
   const clearHistory = (): void => {
     history.value = {

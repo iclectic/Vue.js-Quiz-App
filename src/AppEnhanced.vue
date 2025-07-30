@@ -1,12 +1,21 @@
 <template>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <div id="app">
-    <header class="app-header">
+    <header class="app-header" role="banner">
       <div class="header-content">
-        <h1>Vue.js Quiz App</h1>
+        <h1 id="app-title">Vue.js Quiz App</h1>
         <p>Test your knowledge of Data Structures & Algorithms</p>
       </div>
-      
-      <nav class="app-nav">
+      <button 
+        class="theme-toggle" 
+        :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+        @click="toggleTheme"
+        tabindex="0"
+      >
+        <span v-if="isDark">🌙 Dark</span>
+        <span v-else>☀️ Light</span>
+      </button>
+      <nav class="app-nav" role="navigation" aria-label="Main navigation">
         <button 
           :class="{ active: currentView === 'quiz' }" 
           class="nav-btn"
@@ -28,10 +37,17 @@
         >
           📊 History
         </button>
+        <button 
+          :class="{ active: currentView === 'analytics' }" 
+          class="nav-btn"
+          @click="setView('analytics')"
+        >
+          📈 Analytics
+        </button>
       </nav>
     </header>
 
-    <main class="app-main">
+    <main id="main-content" class="app-main" role="main" tabindex="-1">
       <!-- Settings View -->
       <div
         v-if="currentView === 'settings'"
@@ -54,6 +70,14 @@
           @clear-history="clearHistory"
           @export-history="exportHistory"
         />
+      </div>
+
+      <!-- Analytics View -->
+      <div
+        v-else-if="currentView === 'analytics'"
+        class="analytics-view"
+      >
+        <AnalyticsDashboard />
       </div>
 
       <!-- Quiz View -->
@@ -169,6 +193,7 @@ import ProgressBar from './components/ProgressBar.vue'
 import QuestionCard from './components/QuestionCard.vue'
 import ResultsDisplay from './components/ResultsDisplay.vue'
 import QuizSettings from './components/QuizSettings.vue'
+import AnalyticsDashboard from './components/AnalyticsDashboard.vue'
 import QuizTimer from './components/QuizTimer.vue'
 import QuizHistory from './components/QuizHistory.vue'
 
@@ -237,9 +262,101 @@ const handleTimerToggle = (): void => {
     resumeTimer()
   }
 }
+const themeKey = 'quiz-theme'
+import { ref, onMounted, watch } from 'vue'
+const isDark = ref(false)
+
+function applyTheme(dark: boolean) {
+  const root = document.documentElement
+  if (dark) {
+    root.classList.add('dark')
+    localStorage.setItem(themeKey, 'dark')
+  } else {
+    root.classList.remove('dark')
+    localStorage.setItem(themeKey, 'light')
+  }
+}
+function toggleTheme() {
+  isDark.value = !isDark.value
+  applyTheme(isDark.value)
+}
+onMounted(() => {
+  const saved = localStorage.getItem(themeKey)
+  isDark.value = saved === 'dark'
+  applyTheme(isDark.value)
+})
+
 </script>
 
 <style scoped>
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  z-index: 1000;
+  background: #222;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+  width: auto;
+  height: auto;
+}
+.theme-toggle {
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 2rem;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  z-index: 10;
+}
+.theme-toggle:focus {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+.theme-toggle:hover {
+  background: var(--btn-bg-hover);
+}
+
+:root {
+  --bg: #f7f8fa;
+  --text: #222;
+  --card: #fff;
+  --accent: #667eea;
+  --accent2: #764ba2;
+  --btn-bg: #e0e0e0;
+  --btn-bg-hover: #d1d1d1;
+  --btn-text: #222;
+}
+.dark {
+  --bg: #181926;
+  --text: #f3f3f3;
+  --card: #23243a;
+  --accent: #a18cd1;
+  --accent2: #fbc2eb;
+  --btn-bg: #23243a;
+  --btn-bg-hover: #32334a;
+  --btn-text: #f3f3f3;
+}
+
+/* Improve contrast for nav and header */
+.app-header, .header-content, .app-nav, .start-card, .quiz-info, .timer-container, .history-view, .analytics-view {
+  background: var(--card);
+  color: var(--text);
+}
+
 #app {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

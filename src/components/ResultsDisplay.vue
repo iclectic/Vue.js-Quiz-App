@@ -1,6 +1,6 @@
 <template>
-  <div class="results-container">
-    <h2 class="results-title">
+  <div class="results-container" role="region" aria-labelledby="results-title" tabindex="-1">
+    <h2 class="results-title" id="results-title">
       🎉 Quiz Complete!
     </h2>
     
@@ -26,6 +26,7 @@
     <button
       class="retry-button"
       @click="handleRetry"
+      aria-label="Restart the quiz"
     >
       {{ scorePercentage === 100 ? '🏆 Perfect! Try Again?' : '🔄 Try Again' }}
     </button>

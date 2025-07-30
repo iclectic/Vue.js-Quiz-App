@@ -7,7 +7,17 @@ export interface QuizQuestion {
   category: 'Data Structures' | 'Algorithms'
   difficulty: 'Easy' | 'Medium' | 'Hard'
   index?: number
+  timeSpent?: number // time spent on this question in seconds
 }
+
+export interface AnswerHistoryItem {
+  questionId: number
+  selected: number | null
+  correct: boolean
+  difficulty: 'Easy' | 'Medium' | 'Hard'
+  timeSpent: number
+}
+
 
 export interface CategoryStats {
   correct: number
@@ -64,6 +74,8 @@ export interface QuizResult {
   scorePercentage: number
   categoryBreakdown: CategoryBreakdown
   settings: QuizSettings
+  answerHistory: AnswerHistoryItem[] // per-question analytics
+  difficultyProgression: string[] // difficulty at each step
 }
 
 export interface QuizHistory {

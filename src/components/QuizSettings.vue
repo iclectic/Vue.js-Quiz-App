@@ -18,59 +18,45 @@
             <option :value="600">10 minutes</option>
             <option :value="900">15 minutes</option>
             <option :value="0">No limit</option>
-          </select>
-        </label>
       </div>
 
-      <div class="setting-group">
-        <label class="setting-label">
-          <span class="label-text">Difficulty</span>
-          <select
-            v-model="localSettings.difficulty"
-            class="setting-select"
-          >
-            <option value="All">All Levels</option>
-            <option value="Easy">Easy</option>
-            <option value="Medium">Medium</option>
-            <option value="Hard">Hard</option>
-          </select>
-        </label>
+      <div class="form-group">
+        <label for="difficulty">Difficulty</label>
+        <select id="difficulty" v-model="localSettings.difficulty" aria-label="Select quiz difficulty">
+          <option value="All">All Levels</option>
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+        </select>
       </div>
 
-      <div class="setting-group">
-        <label class="setting-label">
-          <span class="label-text">Category</span>
-          <select
-            v-model="localSettings.category"
-            class="setting-select"
-          >
-            <option value="All">All Categories</option>
-            <option value="Data Structures">Data Structures</option>
-            <option value="Algorithms">Algorithms</option>
-          </select>
-        </label>
+      <div class="form-group">
+        <label for="category">Category</label>
+        <select id="category" v-model="localSettings.category" aria-label="Select quiz category">
+          <option value="All">All Categories</option>
+          <option value="Data Structures">Data Structures</option>
+          <option value="Algorithms">Algorithms</option>
+        </select>
       </div>
 
-      <div class="setting-group">
-        <label class="setting-toggle">
-          <input 
-            v-model="localSettings.showTimer" 
-            type="checkbox"
-            class="toggle-input"
-          >
-          <span class="toggle-slider" />
-          <span class="label-text">Show Timer</span>
-        </label>
+      <div class="form-group">
+        <label for="shuffle-questions">Shuffle Questions</label>
+        <input 
+          id="shuffle-questions"
+          v-model="localSettings.shuffleQuestions" 
+          type="checkbox"
+          aria-label="Shuffle questions"
+        >
       </div>
 
-      <div class="setting-group">
-        <label class="setting-toggle">
-          <input 
-            v-model="localSettings.shuffleQuestions" 
-            type="checkbox"
-            class="toggle-input"
-          >
-          <span class="toggle-slider" />
+      <div class="form-group">
+        <label for="show-hints">Enable Hints</label>
+        <input 
+          id="show-hints"
+          v-model="localSettings.showHints" 
+          type="checkbox"
+          aria-label="Enable hints"
+        >
           <span class="label-text">Shuffle Questions</span>
         </label>
       </div>

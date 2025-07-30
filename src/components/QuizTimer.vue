@@ -3,10 +3,14 @@
     class="quiz-timer"
     :class="timerClass"
   >
-    <div class="timer-circle">
+    <div class="timer-container" role="region" aria-labelledby="timer-title">
+      <h2 id="timer-title" class="visually-hidden">Quiz Timer</h2>
       <svg
         class="timer-svg"
         viewBox="0 0 100 100"
+        aria-label="Time remaining: {{ formattedTime }}"
+        role="img"
+        focusable="false"
       >
         <circle
           cx="50"
@@ -30,19 +34,25 @@
           {{ timeLabel }}
         </div>
       </div>
-    </div>
-    
-    <div
-      v-if="showControls"
-      class="timer-controls"
-    >
-      <button 
-        class="timer-btn" 
-        :class="{ 'paused': !isActive }"
-        @click="toggleTimer"
+      <div class="timer-info" aria-live="polite">
+        <span class="time-label">Time Remaining:</span>
+        <span class="time-value" :class="{ warning: isWarning, critical: isCritical }">
+          {{ formattedTime }}
+        </span>
+      </div>
+      <div
+        v-if="showControls"
+        class="timer-controls"
       >
-        {{ isActive ? '⏸️' : '▶️' }}
-      </button>
+        <button 
+          class="timer-btn" 
+          :class="{ 'paused': !isActive }"
+          @click="toggleTimer"
+          :aria-label="!isActive ? 'Resume timer' : 'Pause timer'"
+        >
+          {{ !isActive ? 'Resume' : 'Pause' }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
